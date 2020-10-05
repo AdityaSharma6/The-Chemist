@@ -1,0 +1,443 @@
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{listings}
+\usepackage{booktabs}
+
+\oddsidemargin 0mm
+\evensidemargin 0mm
+\textwidth 160mm
+\textheight 200mm
+
+\pagestyle {plain}
+\pagenumbering{arabic}
+
+\newcounter{stepnum}
+
+\title{Assignment 2 Solutions}
+\author{Aditya Sharma}
+\date{\today}
+
+\begin {document}
+
+\maketitle
+
+This is my report for Assignment 2. The task for this assignment was to develop a Python Program capable of balancing a chemical equation given a design specification.
+
+\section{Testing of the Original Program}
+The number of testing functions is roughly proportional to the number of methods in each class (excluding static methods).
+Each method has a dedicated test function to testing a particular criteria. Once again, we used
+PyTest to perform the Unit Testing. Unlike the previous assignment, we were given a formal specification,
+I leveraged this specification to make the testing process easier and more manageable.
+
+Once again, I approached testing the program with a particular structure. Firstly, I would test the return type of each method
+to ensure that it matches the specification. Secondly, I would test common cases where the input was as simplistic as possible
+to ensure that the methods are able to perform basic tasks correctly. Finally, whenever it was applicable, I tested particular 
+edge cases.
+
+In some cases, I wasn't able to test the return type or edge cases. The reason for this is because sometimes the design specification
+would state that a method would return a "Sequence". In Python, lists, dictionaries and tuples classify as sequences. Thus,
+there is no fixed type that an output should be. For that reason, I didn't test the output types for methods that returned sequences.
+In addition, majority of the methods were straightforward with their purpose and potential implementation details. Thus, there often times
+were not many edge cases to consider.
+
+I do need to stress the fact that a large majority of the methods were getters. Therefore, the standard approach to test the getters 
+is to check that given the correct input, it is able to return the correct value. There are no edge cases when testing getters. There will usually be edge cases
+when testing a piece of code that requires a complicated component of implementation. For some test functions, I wrote one test method in a particular way that was able 
+to test multiple components. For example: In my test functions, I frequently compared lists and sets. This is because I am able to test 3 different cases with those types of data types.
+I am able to ensure that the number of elements within sets/lists are equal, that each element within one set/list exists in another, that the order of the elements between those two are correct.
+
+\bigskip
+
+
+\subsection{Set Testing}
+
+\subsubsection{Set.add}
+According to the design specification, the purpose of this method was to add an element to the existing set. 
+When we consider the properties of a set (sequential, no duplicates), we can draw out two cases.
+
+Firstly, if we add an element to a set that didn't exist before, then the element should exist in the set. If 
+the element exists in the set, then the length of the set should increase by 1. Secondly, if we add an element 
+that already exists in the set, then there should not be any addition. This means
+that the length of the set should remain the same.
+
+
+\begin{itemize}
+  \item This test case handled the situation where an element that doesn't exist in the set was being added to the set. This ensures that the element is actually added.
+  \item This test case handled the situation where an element that already existed in the set was being added to the set. This checks to ensure that the element doesn't get added because then there will be duplicates and sets can't have duplicates.
+\end{itemize}
+
+
+\subsubsection{Set.rm}
+According to the design specification, the purpose of this method was to remove a particular element from the set.
+\begin{itemize}
+  \item This test case handled the situation where we try removing an item from a set that doesn't exist. This checks to ensure that the correct exception is thrown.
+\end{itemize}
+
+
+\subsubsection{Set.member}
+According to the design specification, the purpose of this method was to check if an element is a member of the set.
+In order to be a member, the element must exist within the set. It was a straightforward method and there were only 
+two possibilities. Either an element is a member or it is not a member. Thus, the following two test cases were generated.
+
+\begin{itemize}
+  \item This test case handled the situation where an element that didn't exist within a set had its membership checked. This checks to that false is returned.
+  \item This test case handled the situation where an element was a member and had its membership checked. This test ensures that true is returned.
+\end{itemize}
+
+\subsubsection{Set.size}
+According to the design specification, the purpose of this method was to return a numerical value that signified the
+size of the set. This had only one test case because the size of a set can only be an integer because of the python programming language.
+
+\begin{itemize}
+  \item This test case handled the situation where the size of a set is checked and the correct actual numerical value is returned.
+\end{itemize}
+
+\subsubsection{Set.equals}
+According to the design specification, the purpose of this method was to determine if two sets are equivalent; if they have the same
+number of elemens and each element in one set exists in another. However, once again, it was a straightforward request and there don't 
+aren't edge cases.
+
+\begin{itemize}
+  \item This test case handles the situation where two differently sized sets are being compared. This ensures that false is returned.
+  \item This test case handles the situation where two sets composed of different elements are being compared. This ensures that false is returned.
+  \item This test case handles the situation where two sets of the same size composed of the same elements are being compared. This ensures that true is returned.
+\end{itemize}
+
+
+\subsubsection{Set.to\textunderscore seq}
+According to the design specification, the purpose of this method was to return a sequence of all the elements from the set.
+Essentially, when we think about it, when we are returning this sequence, the sequence must have the same length and must be composed
+of the same elements. Assuming that a list is returned as the sequence.
+
+\begin{itemize}
+  \item This test case handles the situation where a set is turned into a sequence. It checks to ensure all elements are returned, that no additional elements are returned, that the length is also the same as the length of the original set.
+\end{itemize}
+
+
+
+\subsection{MoleculeT Testing}
+
+\subsubsection{MoleculeT.get\textunderscore num}
+According to the design specification, the purpose of this method is to return the number of elements within the molecule. Since each molecule
+is composed of an ElementT type, it needs to return the number of those particular elements. Once again, this is a straightforward request
+and the only way to test this is to ensure that the correct output is returned.
+
+\begin{itemize}
+  \item This test case handles the case where the number of elements from a molecule must be returned. It checks to ensure that the correct number
+  associated with that particular element was returned. By doing this, it also checks to ensure that it is of the correct type (Integer).
+\end{itemize}
+
+\subsubsection{MoleculeT.get\textunderscore elm}
+This method is similar to the previous method in the fact that its purpose is to return the element that a molecule is composed of. The only test
+case is to check that the correct molecule was returned. There are no edge cases.
+
+\begin{itemize}
+  \item This test case handles the case where the element from a molecule must be returned. It checks to ensure that the correct element
+  associated with that particular molecule was returned. By doing this, it also checks to ensure that it is of the correct type (ElementT)
+  and not another type.
+\end{itemize}
+
+\subsubsection{MoleculeT.num\textunderscore atoms}
+According to the design specifications, the purpose of the method is to return the number of atoms for an element within a molecule.
+It needs to return the correct number. However, what if the element doesn't exist within the molecule. In that case it needs to return 0.
+In order to ensure that the method works perfectly, I will be testing this functionality.
+
+\begin{itemize}
+  \item This test case handles the situation where the element exists within the molecule and it ensures that the correct number is retrieved.
+  \item This test case handdles the situation where the element does not exist within the molecule and that 0 is retrieved.
+\end{itemize}
+
+\subsubsection{MoleculeT.constit\textunderscore elems}
+According to the design specifications, the purpose of the method is to return an ElmSet type that represents the element that makes up the molecule.
+This method is not complicated either. We just need to ensure that the return type is correct and the correct element is returned.
+
+\begin{itemize}
+  \item This test case checks to ensure that the correct ElmSet type was returned.
+  \item This test case checks to ensure that the correct element was returned given any molecule.
+\end{itemize}
+
+\subsubsection{MoleculeT.equals\textunderscore }
+According to the design specification, the purpose of the method is to ensure that one molecule is equal to another.
+In order to do this, we need to check that both molecules are composed of the same number and same type of elements.
+
+\begin{itemize}
+  \item This test case checks to ensure that when given two different molecules, false is returned.
+  \item This test case checks to ensure that when given two of the same molecules with different numbers, false is returned.
+  \item This test case checks to ensure that when given two molecules with the same elements and same count, true is returned.
+\end{itemize}
+
+
+
+\subsection{CompoundT Testing}
+
+\subsubsection{CompoundT.get\textunderscore molec\textunderscore set}
+According to the design specification, since a CompoundT will be made up of various molecules, we need to return a the molecules.
+In order to do this and ensure that the correct output is proceeded, I need to check that all the elements from CompoundT are being returned,
+that the exact same number of values is also being returned.
+
+\begin{itemize}
+  \item This test case checks to ensure that when the function is called, the correct elements and the same number of elemetns are returned.
+  The implementation of this test case allows me to check two things at once. 
+\end{itemize}
+
+\subsubsection{CompoundT.num\textunderscore atoms}
+According to the design specification, given a particular molecule within a compound, I need to return the number of atoms associated with that molecule's 
+element. To ensure that the correct output is produced, I need to check to make sure that the correct number that corresponds to the molecule's element count is 
+returned. In the event that a molecule that doesn't exist within a is specified, I need to check to ensure that the correct fall back is called (return 0).
+
+\begin{itemize}
+  \item This case checks to ensure that the correct output that corresponds to the molecule's element number is produced.
+  \item This case checks to ensure that the correct fallback output (0) is produced when it recieves a element input that doesn't exist within a Compound.
+\end{itemize}
+
+\subsubsection{CompoundT.constit\textunderscore elems}
+According to the design specification, this method needs to return a an ElmSet sequence composed of all the elements that make up the compound.
+Therefore, in order to test this method, I need to check to ensure that the correct elements are returned, the correct number of elements are returned
+and that their return types are the same.
+
+\begin{itemize}
+  \item This case checks to ensure that the correct sequence of ElmSet elements are produced. It checks to ensure that only elements existing within the CompoundT are produced.
+  \item This case checks to ensure that the same number of ElmSet elements are returned, it ensures that no extra elements are being returned.
+  \item This case checks to ensure that the return type are both the same.
+\end{itemize}
+
+\subsubsection{CompoundT.equals}
+According to the specification, the method needs to check if two CompoundT objects are equal.
+In order to determine equivalence, they need to have the same number molecules, elements and number of atoms
+for each element.
+
+\begin{itemize}
+  \item This test case checks to ensure that when two compounds that have the same number of molecules, type of elements and number of atoms
+  \item This test case checks to ensure that the implementation can recognize when the number of molecules, element composition and number of atoms for each element is different.
+  I needed to implement this test case because I needed to check to ensure that the implementation handles those cases because those cases would result in a "false" answer.
+\end{itemize}
+
+
+\subsection{ReactionT Testing}
+
+\subsubsection{ReactionT.get\textunderscore lhs and ReactionT.get\textunderscore rhs}
+Once again, since these methods are both getters, in order to test them, I just need to make sure that the correct output was produced. Since there 
+is no intricacy in the output, I only need to check the values to ensure that they match. There is no possible edge case because of the simplistic nature of the method.
+
+\subsubsection{ReactionT.get\textunderscore lhs\textunderscore coeff and ReactionT.get\textunderscore rhs\textunderscore coeff}
+According to the specifications, these methods need to return the balanced left and right side of the chemical equations that correspond to the coefficients.
+These methods do require a certain level of testing.
+
+\begin{itemize}
+  \item This test case checks to ensure that the correct sequence of numbers is produced (coefficients). The reason I checked this was because depending it is entirely possible for
+  an incorrect sequence of numbers to be produced. 
+  \item This test case also checks to ensure that the order of the sequence of numbers is correct. Since the order of the numbers matter because each number corresponds to a particular 
+  compound's coefficient, I had to ensure that they were correct and they matched.
+  \item Finally, this test case checks to ensure that the correct number of coefficients were retrieved. This is because of the invariant state, the number of coefficients must match the number
+  of compounds.
+\end{itemize}
+
+
+
+
+\section{Results of Testing Partner's Code}
+
+Summary: My partner was able to pass all 28 of my test cases successfully.
+
+My partner passed all 28 test cases. This came as a surprise because initially I was expecting to see errors and failed test cases similar to Assignment 1.
+However, when I didn't encounter the errors. I started to reflect and think about the potential reasons why my partner didn't fail the test cases.
+I realized that from Assignment 1, only a few variables had changed: assignment difficulty, potential new partner and introduction of design specification.
+It dawned to me that the core reason for the result was because of the introduction of the design specification. In the previous assignment, we had our requirements
+stated in a natural language where it was open to introduction. However, in this assignment, everything was formalized and fixed. This reduced the number of assumptions
+that we had to make and gave us a better understanding of the entire program itself so we would be able to better implement particular methods.
+
+\section{Critique of Given Design Specification}
+In this assignment, I liked how we had a formal design specification provided. I felt like this provided a better understanding of particular tasks and 
+goals that we had to achieve. This reduced the time spent trying to understand the task because the design specification clearly outlined the end goal of 
+each method. The specification of the assignment imposed particular design decisions such as Inheritance. I felt like the introduction of Inheritance really
+made the overall program more structured, organized and hierarchical in a sense. This made it easier to understand the connection and relationship between modules.
+
+However, I still believe that there can be room for improvement. Personally, I felt like there were too many classes and objects to 
+keep track of which lead to massive confusion in implementing some methods in CompoundT and ReactionT. The fact that we created several
+objects that inherited from each other made it difficult to understand what exactly was being stored in each object and how we could access
+the information. For example: A CompoundT object is composed of a MolecSet object which is composed of a set of MoleculeTs which is composed of etc\dots
+This continuous application of "Inheritance" made it time consuming because I would have to keep referring to the respective module's template to understand
+which methods exist and which methods would be applicable. Perhaps in the future, an improvement that could be made would be to limit the "Inheritance" chain.
+
+If I were to change the design of the of the project, I would only change the number of inheritances that it requires. Yes, I agree that it inheriting
+did enforce minimalism and essentiality, but it made debugging difficult because I found that if I made a mistake in Set.py, the error would translate into
+MolecSet and ElmSet. This made it difficult to debug at first because I was wondering what was going wrong with my implementation in MolecSet and ElmSet. Then, when I realized that 
+both those objects inherited from Set.py, I was able to find the source of the error. In a sense, inheritances can be good, but for inexperienced developers like myself, it can be
+troublesome in the beginning. 
+
+
+\begin{itemize}
+  \item The design specification satisfied the quality criteria of being "Consistent". Consistentency is defined as following the same naming conventions, being able
+  to handle exceptions and being able to understand the rest of a program given partial knowledge of the program. The reason I say this is because if I were given the naming conventions,
+  purpose and goal of each method, I'm fairly confident that I would be able to make the program. This is because the software engineering principles discussed in 7I were applied to the
+  design of the project.
+
+  \item The design specification satisfied the quality criteria of being "Essential". This is because it provided useful features and didn't
+  include any useless features. I believe that this was satisfied because the concept of "Inheritance" was successfully incorporated. This
+  is because we had a few different versions of "Set" such as "MolecSet" and "ElmSet" that leveraged the same methods from "Set". By implementing
+  "Inheritance", we avoided developing the same routines for each of those objects, routines that would be doing the same task as those from "Set".
+  This also something that I liked because we avoided duplicate work and it saved us time.
+  
+  \item The design specification satisfied the quality criteria of "Generality". This is because the specification was not super fine-tuned or specific.
+  It didn't discuss the procedure of solving a very specific problem i.e: Balancing an equation with 3 compounds. Instead, it focused on a general problem 
+  of being able to solve all chemical equations. Furthermore, the specification provided routines that allowed the users to have a vast majority of freedom.
+  It provided users with the ability to use particular routines in unique ways and still leave room for expansion. It was a specification that was designed for change.
+  The way the the general tasks were conveyed were a little difficult to interpret because of my inexperience with discrete math; however, it did make the project better 
+  because we were able to avoid assumptions and were able to better understand the task at hand.
+
+  \item The design specification did not satisfy "Minimalism" because it had access routines that offer two different services that are requested seperately by the user. According to Hoffman and Strooper,
+  in order to be Minimal, developers must avoid developing access routines that offer two different services that are requested seperately. Many times within a module, there would be methods
+  that return the length of a seqeuence while another determines if a member exists within a sequence. As you can see, these are completely different services that can be requested by the user. 
+  However, I didn't find this to be an issue during my time developing, instead, it just provided me with a greater degree of freedom when programming. I feel like Minimalism and Generality conflict with each other
+  to a degree.
+
+  \item The design specification satisfied the quality criteria for "High Cohesion" because all the components of the program (modules) were tightly related to each other. Often times, the output from
+  one module would become the input for another module after some processing. They were used together to finish the tasks at hand. This was a reason why the project was well designed because of how all the pieces
+  fit together. It made it easier to develop and plan our development. However, sometimes, because of how they were so tightly dependent and related, an error from one module would also carry over into an error in the other
+  module. This made it difficult to debug sometimes.
+
+  \item The design specification did not satisfy the quality criteria of "Low Coupling". Low Coupling is defined as a program's modules not being strongly 
+  dependent on other modules. In this case, because "Inheritance" was so frequently used, several of the modules inherited from other modules. As a result,
+  the modules were strongly dependent on other modules. Therefore, the quality criteria of "Low Coupling" was violated to a degree. Sometimes this made it difficult to work with the project
+  because an error from one module would carry over into an error in the other module. This made it a pain to troubleshoot and debug the program. Perhaps in the future, limiting the number of 
+  inheritances that occur would be beneficial.
+
+  \item The design specification did satisfy the quality criteria of being "Opaque". This is because it successfully enforced information hiding. It was able to
+  enforce information hiding because if a change in the implementation occured, the interface itself would not change. This is assuming that the change in the implementation
+  still follows the output requirements of the design specification. 
+\end{itemize}
+
+The interface also allows for checks that prevent exception generation. This is because of the State Invariants that are mentioned. We have to develop our programs in such a way that exception checks are avoided.
+This is something that played into our thinking process when designing the thinking of our implementation in the modules. 
+\section{Answers}
+
+\begin{enumerate}[a)]
+
+\item The natural language specification made it easier to understand the task on the surface level. It gave us a high-level overview of our task and made it easier
+to understand the end-goal. As a result, the high-level understanding allowed us to quickly begin planning our approach to developing the program. However, the fact 
+that it only gave us a high-level overview meant that several low-level parts were left open to interpretations and there were several assumptions that were made. 
+When I compare this to the formal specification of assignment 2, I realize the difference is enormous. Unlike assignment 1, we were able to still quickly understand the
+end goal of the program and we were able to better understand the requirements of each method. This is because the requirements were conveyed in a more specific format and
+defined format compared to the loose style of natural language. Furthermore, because we had strict requirements to follow, minimal assumptions were made and this resulted
+in a reduction of errors. 
+
+\item The process of converting strings to logical syntactic components is called "Parsing". We would need to add a module that would be responsible for string manipulation
+and storage. The module's sole purpose would be to perform particular manipulations on strings. Personally, if I were to create the module, I would name it "Parser".
+Within the module, I would first need to split the string into reactants and products which would be stored in different variables. Afterwards, I would need to split both the reactants and products into their respective
+compounds. Each compound would be stored in a list. For each compound, I would break each compound into a list of their molecules which would contain a tuple of the element and its count. 
+Afterwards, I would use this information to perform the conversion into ElementT, MoleculeT, MolecSet and CompoundT types.
+
+\item If we wanted to calculate the mass of the elements, molecules and compounds, the first step would be to gather information pertaining to the mass of elements. The next step would be to assign
+each element their respective masses. This means, I would have to assign each ElementT a particular mass. This could be accomplished by creating a module (ElementMass) that would take an ElementT as an input and would
+output an ElementT object that contains its mass. With regards to the implementation, I would personally implement a hashtable where I can set ElementT types as keys and their respective masses as values.
+Upon recieving the input, I would create a new ElementT object that contains its respective mass. The final step would be to implement a module (CalculateMass) that would be responsible for calculating the masses of elements, molecules and compounds.
+In order to do this, the CalculateMass module would have a minimum of 3 instance methods that would rely on a series of static methods to calculate the masses. Each instance method would take a different input type. 
+This way, we would have 1 method that would calculate the mass of elements, 1 method to calculate the mass of molecules and 1 method to calculate the mass of compounds.
+Therefore, to quickly summarize, if I wanted to calculate the masses, I would end up creating addditional modules and integrating those modules into my calculations.
+
+\item This differs from the usual conventions in chemistry because in actual chemistry, floats are not valid coefficients. Chemistry only accepts positive integer values as coeffients. I can modify my current algorithm to change the floats
+to real numbers. I can do this by finding the LCM of all the numbers and then multiply all the numbers by the LCM. By doing this, I can get the smallest whole number for all the coefficients.
+
+\item Dynamic typing is more concise; we can eliminate writing verbose declarations and typecasing logic. Dynamic typing also allows us to program much faster because we can avoid boilerplate code.
+However, dynamic typing does not catch type mismatches when they should be caught, this increases the time a developer would spend debugging. 
+Static typing allows us to catch type mismatches much sooner, usually immediately when they occur. This saves the developer lots of time and effort. In addition, static typing
+improves the organization and maintainaibility of a program.
+
+\item [(i,j) if odd(i) and odd(j) for i in range(1,10) for j in range(i+1,10)] --> "odd(i)" is a function that returns "True" if "i" is odd. We can check if they are odd by doing i modulus 2 != 0.
+\item def summation(listInput): return sum(list(map(add, listInput))) --> "add" is a function that results in 1 for all elements in the list
+\item An interface is a pathway of sorts between different components of a program that exchange information. It can be thought of as an end point that communicates with another entity to either recieve, give or exchange information.
+Implementation is the actual execution process/details that results in the completion of a particular task. Implementation is the details of how a particular task was completed or executed, it is the inner logic of a function/ module.
+\item In Software Engineering, Separation of Concerns is a principle that promotes making decisions separately. It promotes treating each category as its own subset with its own set of available information and then using that information to make a decision regarding the design of a software product. 
+Modularity is a principle that discusses breaking a complex system into smaller pieces called modules. A program composed of such pieces is said to be modular. This principle guides the design by breaking up larger methods into smaller methods capable of doing simpler tasks. It works hand in hand with Separation of Concerns because it allows you to deal with modules in isolation with information pertaining to only that singular module.
+Anticipation of Change is a principle that discusses how software products must be designed with the idea for change to occur. This allows for the evolution of software products and also contributes to its maintenance.  It guides the design of a module’s interface by not containing it to work with super niche data types or by constraining it to perform super specific and unchangeable operations. It guides the design by allowing for a degree of freedom so that change can occur.
+Abstraction is a principle in which we ignore the particular details and only focus on the important aspects of a particular situation. Essentially, it is when we look at a situation with an abstract picture. Usually, it is when we look at a particular program considering only its functions and how we can interact/use it. We would ignore its inner workings. It guides a module’s interface by letting the purpose define the inner workings and by ignoring details.
+Generality is a principle that discusses how a general solution is provided to a particular task instead of the specialized solution. It allows us to successfully execute the desired task and sometimes also allows for the user to use it in a creative way. For example: Microsoft word was developed to write notes, but now it can be used to write resumes. It guides the development of the modules interface by making a developer create general solutions and implementations of particular modules.
+\end{enumerate}
+
+\newpage
+
+\lstset{language=Python, basicstyle=\tiny, breaklines=true, showspaces=false,
+  showstringspaces=false, breakatwhitespace=true}
+%\lstset{language=C,linewidth=.94\textwidth,xleftmargin=1.1cm}
+
+\def\thesection{\Alph{section}}
+
+\section{Code for ChemTypes.py}
+
+\noindent \lstinputlisting{../src/ChemTypes.py}
+
+\newpage
+
+\section{Code for ChemEntity.py}
+
+\noindent \lstinputlisting{../src/ChemEntity.py}
+
+\newpage
+
+\section{Code for Equality.py}
+
+\noindent \lstinputlisting{../src/Equality.py}
+
+\newpage
+
+\section{Code for Set.py}
+
+\noindent \lstinputlisting{../src/Set.py}
+
+\newpage
+
+\section{Code for ElmSet.py}
+
+\noindent \lstinputlisting{../src/ElmSet.py}
+
+\newpage
+
+\section{Code for MolecSet.py}
+
+\noindent \lstinputlisting{../src/MolecSet.py}
+
+\newpage
+
+\section{Code for CompoundT.py}
+
+\noindent \lstinputlisting{../src/CompoundT.py}
+
+\newpage
+
+\section{Code for ReactionT.py}
+
+\noindent \lstinputlisting{../src/ReactionT.py}
+
+\newpage
+
+\section{Code for test\_All.py}
+
+\noindent \lstinputlisting{../src/test_All.py}
+
+\newpage
+
+\section{Code for Partner's Set.py}
+
+\noindent \lstinputlisting{../partner/Set.py}
+
+\newpage
+
+\section{Code for Partner's MoleculeT.py}
+
+\noindent \lstinputlisting{../partner/MoleculeT.py}
+
+\newpage
+
+\section{Code for Partner's CompoundT.py}
+
+\noindent \lstinputlisting{../partner/CompoundT.py}
+
+\newpage
+
+\section{Code for Partner's ReactionT.py}
+
+\noindent \lstinputlisting{../partner/ReactionT.py}
+
+\end {document}
